@@ -14,6 +14,11 @@ class Lecture_front:
         self.rooms = [123, 234]
         self.classes = [12, 34]
 
+    def return_json(self):
+        data = {
+            'lecture_id':1
+        }
+        return data
 
 class Teacher_front:
     def __init__(self):
