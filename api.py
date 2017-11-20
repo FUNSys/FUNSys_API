@@ -70,7 +70,8 @@ def lectures():
     a = Lecture_front(lecture_id,disp_lecture,must,week,jigen,teachers,rooms,classes)
     # レクチャーフロントクラスの配列を作る
     # 配列の1つ目と2つ目にインスタンスを入れる
-    ar = [a.return_json()]
+    ar = []
+    ar.append(a.return_json())
     return jsonify(ar)
     # 配列をjsonifyの中に入れる
 
