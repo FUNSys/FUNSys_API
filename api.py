@@ -3,7 +3,7 @@ from FunsysModel import*
 
 app = Flask(__name__)
 
-@app.route('')
+@app.route('/')
 def index():
     return 'Connection was established'
 
