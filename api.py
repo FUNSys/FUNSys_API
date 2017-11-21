@@ -2,15 +2,19 @@ from flask import Flask, jsonify
 from FunsysModel import*
 
 app = Flask(__name__)
+
+
 # index
 @app.route('/',methods=['GET'])
 def index():
     return 'Connection was established'
 
+
 # response
 @app.route('/ping',methods=['GET'])
 def ping():
     return 'Pong'
+
 
 # send all lectures
 @app.route('/lectures',methods=['GET'])
@@ -30,6 +34,7 @@ def lectures():
         ar.append(data)
     return jsonify(ar)
 
+
 # send single lecture
 @app.route('/lectures/{id}',methods=['GET'])
 def single_lecture(id):
@@ -46,6 +51,7 @@ def single_lecture(id):
     }
     return jsonify(data)
 
+
 # send all teacher
 @app.route('/teachers',methods=['GET'])
 def teachers():
@@ -61,6 +67,22 @@ def teachers():
         }
         ar.appeend(data)
     return jsonify(ar)
+
+
+# send single teacher
+@app.route('/teachers/{id}',methods=['GET'])
+def single_teacher(id):
+    single_teacher = Teacher.select().where(teacher_id=id)
+    data = {
+        'teacher_id': single_teacher.teacher_id,
+        'disp_teacher': single_teacher.disp_teacher,
+        'romen_name': single_teacher.roman_name,
+        'position': single_teacher.position,
+        'research_area': single_teacher.research_area,
+        'role': single_teacher.role
+    }
+    return jsonify(data)
+
 
 # send all classes
 @app.route('/classes',methods=['GET'])
