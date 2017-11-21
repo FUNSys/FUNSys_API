@@ -85,13 +85,18 @@ def lecturesaa(id):
 
 @app.route('/teachers')
 def teachers():
-    # フロントクラスのインスタンスを二つ作る
-    a = Teacher_front()
-    b = Teacher_front()
-    # フロントクラスの配列を作る
-    # 配列の1つ目と2つ目にインスタンスを入れる
-    ar = [a, b]
-    return jsonify(ar)  # 配列をjsonifyの中に入れる
+    ar = []
+    for teacher in Teacher.select():
+        data = {
+                'teacher_id': teacher.teacher_id,
+                'disp_teacher': teacher.disp_teacher,
+                'romen_name': teacher.roman_name,
+                'position': teacher.position,
+                'research_area': teacher.research_area,
+                'role': teacher.role
+            }
+        ar.appeend(data)
+    return jsonify(ar)
 
 
 @app.route('/classes')
