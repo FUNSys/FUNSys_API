@@ -1,89 +1,53 @@
 from flask import Flask, jsonify
+from FunsysModel import*
 
 app = Flask(__name__)
 
-
-class Lecture_front:
-    def __init__(self,lecture_id,disp_lecture,must,week,jigen,teachers,rooms,classes):
-        self.lecture_id = lecture_id
-        self.disp_lecture = disp_lecture
-        self.must = must
-        self.week = week
-        self.jigen = jigen
-        self.teachers = teachers
-        self.rooms = rooms # [123, 234]
-        self.classes = classes # [12, 34]
-
-    def return_json(self):
-        data = {
-            'lecture_id':self.lecture_id,
-            'disp_lecture':self.disp_lecture,
-            'must':self.must,
-            'week':self.week,
-            'jigen': self.jigen,
-            'teachers': self.teachers,
-            'rooms': self.rooms,
-            'classes': self.classes,
-
-        }
-        return data
-
-class Teacher_front:
-    def __init__(self):
-        self.teachers_id = 1
-        self.disp_teacher = ""
-        self.research_area = ""
-        self.course = 1
+@app.route('')
+def index():
+    return 'Connection was established'
 
 
-class Room_front:
-    def __init__(self):
-        self.room_id = 1
-        self.disp_room = ""
-
-
-class Class_front:
-    def __init__(self):
-        self.class_id = 1
-        self.year = 1
-        self.kumi = "A"
-        self.course = 1
-
-
-@app.route('/ping')
+@app.route('/ping',methods=['POST'])
 def ping():
     return 'Pong'
 
 
-@app.route('/lectures')
+@app.route('/lectures',methods=['POST'])
 def lectures():
-    # レクチャーフロントクラスのインスタンスを二つ作る
-    # 引数は講義ID,講義名,必修/選択,週,時限,先生s,部屋s,クラス
-    lecture_id = 0
-    disp_lecture = '線型代数学'
-    must = True
-    week = '月'
-    jigen = '1'
-    teachers = ['由良','香取']
-    rooms  = ['123', '234','R791']
-    classes = ['A', 'B', 'C', 'D']
-    a = Lecture_front(lecture_id,disp_lecture,must,week,jigen,teachers,rooms,classes)
-    # レクチャーフロントクラスの配列を作る
-    # 配列の1つ目と2つ目にインスタンスを入れる
     ar = []
-    ar.append(a.return_json())
+    for lecture in Lecture.select():
+        data = {
+            'lecture_id': lecture.lecture_id,
+            'disp_lecture': lecture.disp_lecture,
+            'must': lecture.must,
+            'week': lecture.week,
+            'jigen': lecture.jigen,
+            'teachers': lecture.teachers,
+            'rooms': lecture.rooms,
+            'classes': lecture.classes,
+        }
+        ar.append(data)
     return jsonify(ar)
-    # 配列をjsonifyの中に入れる
 
 
-@app.route('/lectures/{id}')
-def lecturesaa(id):
-    # レクチャーフロントクラスのインスタンスを作る
-    a = Lecture_front()
-    return jsonify(a)  # 配列をjsonifyの中に入れる
+@app.route('/lectures/{id}',methods=['POST'])
+def single_lecture(id):
+    lecture = Lecture.select().where(lecture_id=id)
+    data = {
+        'lecture_id': lecture.lecture_id,
+        'disp_lecture': lecture.disp_lecture,
+        'must': lecture.must,
+        'week': lecture.week,
+        'jigen': lecture.jigen,
+        'teachers': lecture.teachers,
+        'rooms': lecture.rooms,
+        'classes': lecture.classes,
+    }
+    return jsonify(data)
 
 
-@app.route('/teachers')
+@app.route('/teachers',methods=['POST'])
 def teachers():
     ar = []
     for teacher in Teacher.select():
@@ -94,33 +58,34 @@ def teachers():
                 'position': teacher.position,
                 'research_area': teacher.research_area,
                 'role': teacher.role
-            }
+        }
         ar.appeend(data)
     return jsonify(ar)
 
 
-@app.route('/classes')
+@app.route('/classes',methods=['POST'])
 def classes():
-    # フロントクラスのインスタンスを二つ作る
-    a = Class_front()
-    b = Class_front()
-    # フロントクラスの配列を作る
-    # 配列の1つ目と2つ目にインスタンスを入れる
-    ar = [a, b]
-    return jsonify(ar)  # 配列をjsonifyの中に入れる
+    ar = []
+    for single_class in Class.select():
+        data = {
+            'class_id': single_class.class_id,
+            'disp_class': single_class.disp_class,
+            'course': single_class.cource,
+        }
+    ar.append(data)
+    return(ar)
 
 
-@app.route('/rooms')
+@app.route('/rooms',methods=['POST'])
 def rooms():
-    # フロントクラスのインスタンスを二つ作る
-    # 引数は講義ID,講義名,必修/選択,週,時限,先生s,部屋s,クラス
-    a = Room_front()
-    b = Room_front()
-    # フロントクラスの配列を作る
-    # 配列の1つ目と2つ目にインスタンスを入れる
-    ar = [a, b]
-    return jsonify(ar)  # 配列をjsonifyの中に入れる
-
+    ar = []
+    for room in Room.select():
+        data = {
+            'room_id':room.room_id,
+            'disp_room':room.disp_room
+        }
+    ar.append(data)
+    return (ar)
 
 if __name__ == '__main__':
     app.run()
