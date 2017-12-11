@@ -2,7 +2,7 @@ from flask import Flask, jsonify
 from FunsysModel import*
 
 app = Flask(__name__)
-
+app.config['JSON_AS_ASCII'] = False
 
 # index
 @app.route('/',methods=['GET'])
