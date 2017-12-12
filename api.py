@@ -1,6 +1,9 @@
 from flask import Flask, jsonify
 from FunsysModel import*
+
+
 app = Flask(__name__)
+app.config['JSON_AS_ASCII'] = False
 
 
 # index
@@ -9,13 +12,7 @@ def index():
     return 'Connection was established\n'
 
 
-# response
-@app.route('/ping',methods=['GET'])
-def ping():
-    return 'Pong\n'
-
-
-# send all lectures
+# send all lectures [Error of ManyToMany]
 @app.route('/lectures',methods=['GET'])
 def lectures():
     ar = []
@@ -27,9 +24,9 @@ def lectures():
                 'must': lecture.must,
                 'week': lecture.week,
                 'jigen': lecture.jigen,
-                'teachers': lecture.teachers,
-                'rooms': lecture.rooms,
-                'classes': lecture.classes,
+                #'teachers': lecture.teachers,
+                #'rooms': lecture.rooms,
+                #'classes': lecture.classes,
             }
             ar.append(data)
         return jsonify(ar)
@@ -37,27 +34,27 @@ def lectures():
         return 'DoesNotExist\n'
 
 
-# send single lecture
-@app.route('/lectures/{id}',methods=['GET'])
+# send single lecture [Error of ManyToMany]
+@app.route('/lectures/<id>',methods=['GET'])
 def single_lecture(id):
     try:
-        lecture = Lecture.select().where(lecture_id=id)
+        lecture = Lecture.get(Lecture.lecture_id==id)
         data = {
             'lecture_id': lecture.lecture_id,
             'disp_lecture': lecture.disp_lecture,
             'must': lecture.must,
             'week': lecture.week,
             'jigen': lecture.jigen,
-            'teachers': lecture.teachers,
-            'rooms': lecture.rooms,
-            'classes': lecture.classes,
+            # 'teachers': lecture.teachers,
+            # 'rooms': lecture.rooms,
+            # 'classes': lecture.classes,
         }
         return jsonify(data)
     except Lecture.DoesNotExist:
         return 'DoesNotExist\n'
 
 
-# send all teacher
+# send all teacher [OK]
 @app.route('/teachers',methods=['GET'])
 def teachers():
     ar = []
@@ -71,17 +68,17 @@ def teachers():
                 'research_area': teacher.research_area,
                 'role': teacher.role
             }
-            ar.appeend(data)
+            ar.append(data)
         return jsonify(ar)
     except Teacher.DoesNotExist:
         return 'DoesNotExist\n'
 
 
-# send single teacher
-@app.route('/teachers/{id}',methods=['GET'])
+# send single teacher [OK]
+@app.route('/teachers/<id>',methods=['GET'])
 def single_teacher(id):
     try:
-        single_teacher = Teacher.select().where(teacher_id=id)
+        single_teacher = Teacher.get(Teacher.teacher_id==id)
         data = {
             'teacher_id': single_teacher.teacher_id,
             'disp_teacher': single_teacher.disp_teacher,
@@ -95,7 +92,7 @@ def single_teacher(id):
         return 'DoesNotExist\n'
 
 
-# send all classes
+# send all classes [Error of ManyToMany]
 @app.route('/classes',methods=['GET'])
 def classes():
     ar = []
@@ -104,28 +101,30 @@ def classes():
             data = {
                 'class_id': single_class.class_id,
                 'disp_class': single_class.disp_class,
-                'course': single_class.cource,
+                # 'course': single_class.cource,
             }
             ar.append(data)
-        return(ar)
+        return jsonify(ar)
     except Class.DoesNotExist:
         return 'DoesNotExist\n'
 
-# send single class
-@app.route('/classes/{id}',methods=['GET'])
+
+# send single class [Error of ManyToMany]
+@app.route('/classes/<id>',methods=['GET'])
 def single_class(id):
     try:
-        single_class = Class.select().where(class_id=id)
+        single_class = Class.get(Class.class_id==id)
         data = {
             'class_id': single_class.class_id,
             'disp_class': single_class.disp_class,
-            'course': single_class.cource,
+            # 'course': single_class.cource,
             }
         return jsonify(data)
     except Class.DoesNotExist:
         return 'DoesNotExist\n'
 
-# send all rooms
+
+# send all rooms [OK]
 @app.route('/rooms',methods=['GET'])
 def rooms():
     ar = []
@@ -136,15 +135,15 @@ def rooms():
                 'disp_room':room.disp_room
             }
             ar.append(data)
-        return (ar)
     except Room.DoesNotExist:
         return 'DoesNotExist\n'
+    return jsonify(ar)
 
-# send single room
-@app.route('/rooms/{id}',methods=['GET'])
+# send single room [OK]
+@app.route('/rooms/<id>',methods=['GET'])
 def single_room(id):
     try:
-        room = Room.select().where(room_id=id)
+        room = Room.get(Room.room_id==id)
         data = {
             'room_id':room.room_id,
             'disp_room':room.disp_room
@@ -155,4 +154,4 @@ def single_room(id):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
