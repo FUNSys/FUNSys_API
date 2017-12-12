@@ -24,14 +24,14 @@ def lectures():
                 'must': lecture.must,
                 'week': lecture.week,
                 'jigen': lecture.jigen,
-                #'teachers': lecture.teachers,
-                #'rooms': lecture.rooms,
-                #'classes': lecture.classes,
+                # 'teachers': lecture.teachers,
+                # 'rooms': lecture.rooms,
+                # 'classes': lecture.classes,
             }
             ar.append(data)
-        return jsonify(ar)
     except Lecture.DoesNotExist:
         return 'DoesNotExist\n'
+    return jsonify(ar)
 
 
 # send single lecture [Error of ManyToMany]
@@ -53,7 +53,6 @@ def single_lecture(id):
     except Lecture.DoesNotExist:
         return 'DoesNotExist\n'
 
-
 # send all teacher [OK]
 @app.route('/teachers',methods=['GET'])
 def teachers():
@@ -73,7 +72,6 @@ def teachers():
     except Teacher.DoesNotExist:
         return 'DoesNotExist\n'
 
-
 # send single teacher [OK]
 @app.route('/teachers/<id>',methods=['GET'])
 def single_teacher(id):
@@ -91,8 +89,7 @@ def single_teacher(id):
     except Teacher.DoesNotExist:
         return 'DoesNotExist\n'
 
-
-# send all classes [Error of ManyToMany]
+# send all classes [OK]
 @app.route('/classes',methods=['GET'])
 def classes():
     ar = []
@@ -101,7 +98,7 @@ def classes():
             data = {
                 'class_id': single_class.class_id,
                 'disp_class': single_class.disp_class,
-                # 'course': single_class.cource,
+                'course': single_class.course,
             }
             ar.append(data)
         return jsonify(ar)
@@ -109,7 +106,7 @@ def classes():
         return 'DoesNotExist\n'
 
 
-# send single class [Error of ManyToMany]
+# send single class [OK]
 @app.route('/classes/<id>',methods=['GET'])
 def single_class(id):
     try:
@@ -117,7 +114,7 @@ def single_class(id):
         data = {
             'class_id': single_class.class_id,
             'disp_class': single_class.disp_class,
-            # 'course': single_class.cource,
+            'course': single_class.cource,
             }
         return jsonify(data)
     except Class.DoesNotExist:
