@@ -21,7 +21,7 @@ def ping():
 
 # send all lectures
 @app.route('/lectures', methods=['GET'])
-def lectures():
+def get_all_lectures():
     query = Lecture.select()
     lectureshashed = list(
         map(lambda x: {
@@ -39,7 +39,7 @@ def lectures():
 
 # send single lecture
 @app.route('/lectures/<id>', methods=['GET'])
-def single_lecture(id):
+def get_single_lecture(id):
     query = Lecture.get(Lecture.lecture_id == id)
     data = {
         'lecture_id': query.lecture_id,
@@ -56,7 +56,7 @@ def single_lecture(id):
 
 # send all teacher
 @app.route('/teachers', methods=['GET'])
-def teachers():
+def get_all_teachers():
     query = Teacher.select()
     teacherlist = list(
         map(lambda x: {
@@ -73,7 +73,7 @@ def teachers():
 
 # send single teacher
 @app.route('/teachers/<id>', methods=['GET'])
-def single_teacher(id):
+def get_single_teacher(id):
     single_teacher = Teacher.get(Teacher.teacher_id == id)
     data = {
         'teacher_id': single_teacher.teacher_id,
@@ -88,7 +88,7 @@ def single_teacher(id):
 
 # send all classes
 @app.route('/classes', methods=['GET'])
-def classes():
+def get_all_classes():
     query = Class.select()
     classlist = list(
         map(lambda x: {
@@ -103,7 +103,7 @@ def classes():
 
 
 @app.route('/classes/<id>', methods=['GET'])
-def single_class(id):
+def get_single_class(id):
     query = Class.get(Class.class_id == id)
     data = {
         'class_id': query.class_id,
@@ -116,7 +116,7 @@ def single_class(id):
 
 
 @app.route('/rooms', methods=['GET'])
-def rooms():
+def get_all_rooms():
     query = Room.select()
     roomslist = list(
         map(lambda x: {'room_id': x.room_id, 'disp_room': x.disp_room}, query))
@@ -126,7 +126,7 @@ def rooms():
 
 
 @app.route('/rooms/<id>', methods=['GET'])
-def single_room(id):
+def get_single_room(id):
     room = Room.get(Room.room_id == id)
     data = {
         'room_id': room.room_id,
