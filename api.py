@@ -5,25 +5,12 @@ app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 app.config['JSON_SORT_KEYS'] = False
 
-# index
-
-
-@app.route('/', methods=['GET'])
-def index():
-    return 'Connection was established'
-
-
-# response
-@app.route('/ping', methods=['GET'])
-def ping():
-    return 'Pong'
-
 
 # send all lectures
 @app.route('/lectures', methods=['GET'])
 def get_all_lectures():
     query = Lecture.select()
-    lectureshashed = list(
+    lecture_dict_list = list(
         map(lambda x: {
             'lecture_id': x.lecture_id,
             'disp_lecture': x.disp_lecture,
@@ -34,7 +21,7 @@ def get_all_lectures():
             'rooms': list(map(lambda y: y.room_id, x.rooms)),
             'classes': list(map(lambda y: y.class_id, x.classes)),
         }, query))
-    return jsonify(lectureshashed)
+    return jsonify(lecture_dict_list)
 
 
 # send single lecture
@@ -90,18 +77,17 @@ def get_single_teacher(id):
 @app.route('/classes', methods=['GET'])
 def get_all_classes():
     query = Class.select()
-    classlist = list(
+    class_dict_list = list(
         map(lambda x: {
             'class_id': x.class_id,
             'disp_class': x.disp_class,
             'course': x.course,
         }, query)
     )
-    return jsonify(classlist)
+    return jsonify(class_dict_list)
+
 
 # send single class
-
-
 @app.route('/classes/<id>', methods=['GET'])
 def get_single_class(id):
     query = Class.get(Class.class_id == id)
@@ -112,19 +98,17 @@ def get_single_class(id):
     }
     return jsonify(data)
 
+
 # send all rooms
-
-
 @app.route('/rooms', methods=['GET'])
 def get_all_rooms():
     query = Room.select()
-    roomslist = list(
+    room_dict_list = list(
         map(lambda x: {'room_id': x.room_id, 'disp_room': x.disp_room}, query))
-    return jsonify(roomslist)
+    return jsonify(room_dict_list)
+
 
 # send single room
-
-
 @app.route('/rooms/<id>', methods=['GET'])
 def get_single_room(id):
     room = Room.get(Room.room_id == id)
@@ -136,5 +120,4 @@ def get_single_room(id):
 
 
 if __name__ == '__main__':
-    app.debug = True
     app.run()
