@@ -23,17 +23,19 @@ def ping():
 @app.route('/lectures', methods=['GET'])
 def lectures():
     query = Lecture.select()
-    lectureshashed = list(
-        map(lambda x: {
-            'lecture_id': x.lecture_id,
-            'disp_lecture': x.disp_lecture,
-            'must': x.must,
-            'week': x.week,
-            'jigen': x.jigen,
-            'teachers': list(map(lambda y: y.teacher_id, x.teachers)),
-            'rooms': list(map(lambda y: y.room_id, x.rooms)),
-            'classes': list(map(lambda y: y.class_id, x.classes)),
-        }, query))
+    lectureshashed = []
+    for lecture in query:
+        data = {
+            'lecture_id': lecture.lecture_id,
+            'disp_lecture': lecture.disp_lecture,
+            'must': lecture.must,
+            'week': lecture.week,
+            'jigen': lecture.jigen,
+            'teachers': list(map(lambda y: y.teacher_id, lecture.teachers)),
+            'rooms': list(map(lambda y: y.room_id, lecture.rooms)),
+            'classes': list(map(lambda y: y.class_id, lecture.classes))
+        }
+        lectureshashed.append(data)
     return jsonify(lectureshashed)
 
 
@@ -58,16 +60,17 @@ def single_lecture(id):
 @app.route('/teachers', methods=['GET'])
 def teachers():
     query = Teacher.select()
-    teacherlist = list(
-        map(lambda x: {
-            'teacher_id': x.teacher_id,
-            'disp_teacher': x.disp_teacher,
-            'romen_name': x.roman_name,
-            'position': x.position,
-            'research_area': x.research_area,
-            'role': x.role
-        }, query)
-    )
+    teacherlist = []
+    for teacher in query:
+        data ={
+            'teacher_id': teacher.teacher_id,
+            'disp_teacher': teacher.disp_teacher,
+            'romen_name': teacher.roman_name,
+            'position': teacher.position,
+            'research_area': teacher.research_area,
+            'role': teacher.role
+        }
+        teacherlist.append(data)
     return jsonify(teacherlist)
 
 
@@ -90,13 +93,14 @@ def single_teacher(id):
 @app.route('/classes', methods=['GET'])
 def classes():
     query = Class.select()
-    classlist = list(
-        map(lambda x: {
-            'class_id': x.class_id,
-            'disp_class': x.disp_class,
-            'course': x.course,
-        }, query)
-    )
+    classlist = []
+    for singleclass in query:
+        data = {
+            'class_id': singleclass.class_id,
+            'disp_class': singleclass.disp_class,
+            'course': singleclass.course
+        }
+        classlist.append(data)
     return jsonify(classlist)
 
 # send single class
@@ -108,7 +112,7 @@ def single_class(id):
     data = {
         'class_id': query.class_id,
         'disp_class': query.disp_class,
-        'course': query.course,
+        'course': query.course
     }
     return jsonify(data)
 
@@ -118,8 +122,13 @@ def single_class(id):
 @app.route('/rooms', methods=['GET'])
 def rooms():
     query = Room.select()
-    roomslist = list(
-        map(lambda x: {'room_id': x.room_id, 'disp_room': x.disp_room}, query))
+    roomslist = []
+    for room in query:
+        data = {
+            'room_id': room.room_id, 
+            'disp_room': room.disp_room
+        }
+        roomslist.append(data)
     return jsonify(roomslist)
 
 # send single room
