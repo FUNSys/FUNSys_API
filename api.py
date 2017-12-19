@@ -1,6 +1,8 @@
 from flask import Flask, jsonify
 from FunsysModel import *
-
+import os
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+APP_STATIC = os.path.join(APP_ROOT, '')
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 app.config['JSON_SORT_KEYS'] = False
@@ -117,6 +119,43 @@ def get_single_room(id):
         'disp_room': room.disp_room
     }
     return jsonify(data)
+
+
+@app.route('/musts')
+def get_all_musts():
+    lines = []
+    with open(os.path.join(APP_STATIC, 'must_data.txt')) as f:
+        for line in f:
+            x = line.split(',')
+            must_list = {
+                    'must_id': x[0],
+                    'ict': x[1],
+                    'system': x[2],
+                    'design': x[3],
+                    'complex': x[4],
+                    'intelligent': x[5],
+                    'unassign': x[6]
+            }
+            lines.append(must_list)
+    return jsonify(lines)
+
+
+@app.route('/musts/<id>')
+def get_single_must(id):
+    with open(os.path.join(APP_STATIC, 'must_data.txt')) as f:
+        for line in f:
+            x = line.split(',')
+            if x[0] in str(id):
+                must_list = {
+                        'must_id': x[0],
+                        'ict': x[1],
+                        'system': x[2],
+                        'design': x[3],
+                        'complex': x[4],
+                        'intelligent': x[5],
+                        'unassign': x[6]
+                }
+                return jsonify(must_list)
 
 
 if __name__ == '__main__':
